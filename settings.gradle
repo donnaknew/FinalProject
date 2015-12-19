@@ -1,0 +1,2 @@
+include ':app', ':mcalendarview'
+project(':mcalendarview').projectDir = new File('app/libs/mcalendarview')
