@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             } else {
                 //do something when satisfied condition (permission)
             }
+
         }
         if (Build.VERSION.SDK_INT >= 23) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         setupToolbar();
 
         MapsInitializer.initialize(getApplicationContext());
-        DBManager.createTable(this);
+        //DBManager.createTable(this);
         init();
 
         menu1.setOnMenuButtonClickListener(new View.OnClickListener() {
@@ -152,59 +153,6 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         fab1.setOnClickListener(clickListener);
         fab2.setOnClickListener(clickListener);
         fab3.setOnClickListener(clickListener);
-       /*
-        btHundred.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                balanceSum += 100;
-                if(inputStart == 0){
-                    inputStart = System.currentTimeMillis();
-                    //insertData(balanceSum);
-                }
-                //insertData(balanceSum);
-                //showMoneyMarker();
-            }
-        });
-        btThousand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                inputEnd = System.currentTimeMillis();
-                //init();
-                if(inputEnd - inputStart >= 1000*60){
-                    inputStart = 0;
-                    inputEnd = 0;
-                    keyCursor = 0;
-                    balanceSum = 0;
-                }
-                balanceSum += 1000;
-                if(inputStart == 0){
-                    inputStart = System.currentTimeMillis();
-                    keyCursor = 1;
-                    insertData(balanceSum, latitude, longitude, keyCursor);
-                    //showMoneyMarker(latLng);
-                    id = selectID(keyCursor);
-                    keyCursor = 0;
-                    updateCursor(id, keyCursor);
-                    Log.e("FirstCheck", "balanceSum=" + balanceSum + " latitude=" + latitude + " longitude=" + longitude + " keyCursor=" + keyCursor);
-                }
-                else{
-                    updateData(id, balanceSum);  //key값인 id값을 바로 위에 if문에서 받아서 여기서 넣으면 될듯
-                    Log.e("SecondCheck", "balanceSum=" + balanceSum + " keyCursor=" + keyCursor);
-                }
-                //insertData(balanceSum);
-                //showMoneyMarker(latLng);
-                selectAll();
-            }
-        });
-        btTenThousand.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                balanceSum += 10000;
-                if(inputStart == 0){
-                    inputStart = System.currentTimeMillis();
-                }
-            }
-        });*/
 //        getSupportFragmentManager().beginTransaction().replace(R.id.mainfc, mf).commit();
     }
     private void setupFragments(){
@@ -221,20 +169,20 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 int itemid = menuItem.getItemId();
                 switch (itemid) {
                     case R.id.navigation_item_0:
-                        Toast.makeText(MainActivity.this, "BalanceMap", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "BalanceMap", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(MainActivity.this, MainActivity.class);
                         startActivity(intent);
                         //getFragmentManager().beginTransaction().replace(R.id.mainfc, mf).commit();
                         break;
                     case R.id.navigation_item_1:
-                        Toast.makeText(MainActivity.this, "Calendar", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Calendar", Toast.LENGTH_SHORT).show();
                         ((RelativeLayout) findViewById(R.id.mainfc)).removeAllViews();
 
 //                        getSupportFragmentManager().beginTransaction().hide(getSupportFragmentManager().getFragments().get(1));
                         getSupportFragmentManager().beginTransaction().replace(R.id.mainfc, calendarActivity).commit();
                         break;
                     case R.id.navigation_item_2:
-                        Toast.makeText(MainActivity.this, "DailyBalanceChart", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "DailyBalanceChart", Toast.LENGTH_SHORT).show();
                         ((RelativeLayout) findViewById(R.id.mainfc)).removeAllViews();
                         getSupportFragmentManager().beginTransaction().replace(R.id.mainfc, chartActivity).commit();
                         /*Snackbar
@@ -274,26 +222,9 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
 
         // Show menu icon
         final ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.icon_moneybook_68x68);
+        ab.setHomeAsUpIndicator(R.mipmap.ic_launcher);
         ab.setDisplayHomeAsUpEnabled(true);
     }
-    /* public void showMoneyMarker(LatLng latLng){
-         MarkerOptions optFirst = new MarkerOptions();
-         optFirst.position(latLng);// 위도 • 경도
-         optFirst.title("Current Position : " + balanceSum);// 제목 미리보기
-         optFirst.snippet("Snippet");
-         optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
-         balanceMap.addMarker(optFirst).showInfoWindow();
-     }*/
-//    public void showToadyMoneyMarker(double latitude, double longitude, int balanceSum){
-//        LatLng latLng = new LatLng(latitude, longitude);
-//        MarkerOptions optFirst = new MarkerOptions();
-//        optFirst.position(latLng);// 위도 • 경도
-//        optFirst.title("Current Position : " + balanceSum);// 제목 미리보기
-//        optFirst.snippet("Snippet");
-//        optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_launcher));
-//        balanceMap.addMarker(optFirst).showInfoWindow();
-//    }
 
     public void onMapClick(LatLng point) {
 
@@ -323,6 +254,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
             // Creating a LatLng object for the current location
             LatLng latLng = new LatLng(latitude, longitude);
             // Showing the current location in Google Map
+            DBManager.createTable(this);
             DBManager.selectAllMarker(this, balanceMap);
             balanceMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
             // Map 을 zoom 합니다.
@@ -339,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 case R.id.fab1:
                     inputEnd = System.currentTimeMillis();
                     //init();
-                    if(inputEnd - inputStart >= 1000*60){
+                    if(inputEnd - inputStart >= 1000*30){
                         inputStart = 0;
                         inputEnd = 0;
                         keyCursor = 0;
@@ -365,7 +297,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                 case R.id.fab2:
                     inputEnd = System.currentTimeMillis();
                     //init();
-                    if(inputEnd - inputStart >= 1000*60){
+                    if(inputEnd - inputStart >= 1000*30){
                         inputStart = 0;
                         inputEnd = 0;
                         keyCursor = 0;
@@ -393,7 +325,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     break;
                 case R.id.fab3:
                     inputEnd = System.currentTimeMillis();
-                    if(inputEnd - inputStart >= 1000*60){
+                    if(inputEnd - inputStart >= 1000*30){
                         inputStart = 0;
                         inputEnd = 0;
                         keyCursor = 0;
@@ -422,6 +354,7 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
                     .setAction("Action", this)
                     .show(); // Don’t forget to show!
             Toast.makeText(MainActivity.this, text, Toast.LENGTH_SHORT).show();
+            init();
         }
     };
 
@@ -439,5 +372,6 @@ public class MainActivity extends AppCompatActivity implements GoogleMap.OnMapCl
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+        init();
     }
 }

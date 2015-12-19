@@ -45,7 +45,7 @@ public class DBManager {
     }
     public static void insertData(Context ctx, int balance, double latitude, double longitude, int keyCursor) {
         SQLiteDatabase balanceDB = ctx.openOrCreateDatabase(balanceDBName, balanceDBMode, null);
-        String sql = "insert into " + balanceTableName + " values(NULL, " + balance + ", " + latitude + ", " + longitude + ", date(), " + keyCursor + ");";
+        String sql = "insert into " + balanceTableName + " values(NULL, " + balance + ", " + latitude + ", " + longitude + ", date('now'), " + keyCursor + ");";
         balanceDB.execSQL(sql);
         balanceDB.close();
     }
@@ -67,7 +67,7 @@ public class DBManager {
     // Data 삭제
     public static void removeData(Context ctx, int index) {
         SQLiteDatabase balanceDB = ctx.openOrCreateDatabase(balanceDBName, balanceDBMode, null);
-        String sql = "delete from " + balanceTableName + " where id = " + (index+1) + ";";
+        String sql = "delete from " + balanceTableName + " where id = " + index + ";";
         Log.i("removedata:", sql);
         balanceDB.execSQL(sql);
         balanceDB.close();
@@ -95,14 +95,14 @@ public class DBManager {
 //        return id;
 //    }
     // 모든 Data 읽기
-    public static void selectAll(Context ctx, ArrayList nameList, String selectDay) {
+    public static String selectAll(Context ctx, ArrayList nameList, String selectDay) {
         SQLiteDatabase balanceDB = ctx.openOrCreateDatabase(balanceDBName, balanceDBMode, null);
         //String sql = "select * from " + balanceTableName + " where time = date('now')" + ";"; //오늘것만 보고 싶을때 나중에 이걸로 바꿀것
         //String sql = "select * from " + balanceTableName + ";";
         String sql = "select * from " + balanceTableName + " where time = date('" + selectDay + "');";
         Cursor results = balanceDB.rawQuery(sql, null);
         results.moveToFirst();
-
+        String buff = "";
         while (!results.isAfterLast()) {
             int id = results.getInt(0);
             int balances = results.getInt(1);
@@ -110,7 +110,8 @@ public class DBManager {
             double longitude = results.getDouble(3);
             String dateTime = results.getString(4);
             int cursors = results.getInt(5);
-            String listString = "    " + dateTime + "                " + balances + "원";//not accept \t
+            buff = dateTime;
+            String listString = id + ".    " + dateTime + "                " + balances + "원";//not accept \t
             Log.d("lab_sqlite", "id= " + id + " balnces=" + balances + " latitude=" + latitude + " longitude=" + longitude + " dateTime=" + dateTime + " cursors=" + cursors);
             nameList.add(listString);
             //showToadyMoneyMarker(latitude, longitude, balances, balanceMap);
@@ -118,6 +119,7 @@ public class DBManager {
         }
         results.close();
         balanceDB.close();
+        return buff;
     }
     public static void selectAllMonthly(Context ctx, ArrayList monthBalanceList, String selectDay) {
         SQLiteDatabase balanceDB = ctx.openOrCreateDatabase(balanceDBName, balanceDBMode, null);

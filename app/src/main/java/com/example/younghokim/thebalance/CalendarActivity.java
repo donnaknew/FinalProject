@@ -44,7 +44,8 @@ public class CalendarActivity extends Fragment {
     LinearLayout calendarArea;
     ArrayList<String> nameList;
     ArrayAdapter<String> baseAdapter;
-    Date afterRemove;
+    //Date afterRemove;
+    String afterRemove;
 
 //    SQLiteDatabase balanceDB;
 //    String balanceDBName = "balanceRanking.db";
@@ -63,7 +64,7 @@ public class CalendarActivity extends Fragment {
         mlist = (ListView)v.findViewById(R.id.listView);
         mlist.setAdapter(baseAdapter);
         nameList.clear();
-        DBManager.selectAll(getActivity(), nameList, "now");
+        afterRemove = DBManager.selectAll(getActivity(), nameList, "now");
 //        if(baseAdapter.getCount() > 2){
 //            View item = baseAdapter.getView(0, null, mlist);
 //            item.measure(0, 0);
@@ -97,12 +98,24 @@ public class CalendarActivity extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         //String s=String.valueOf(position);
                         //parent.
-                        //nameList.indexOf(position);
+                        Log.e("checkPosition ", ""+position);
+                        Log.e("checkIndex ", "" + nameList.indexOf(position));
                         //nameList.get(nameList.indexOf(position));
-                        Log.e("checkIndex", nameList.get(nameList.indexOf(position)+1));
- //                       DBManager.removeData(getActivity(), position);
-//                        DBManager.selectAll(getActivity(), nameList, formatter.format(afterRemove));
-                        //Log.e("check:", formatter.format(afterRemove));
+                        //int pos = position;
+//                        Log.e("checkIndex", nameList.get(nameList.indexOf(position) + 1));
+//                        String idStr = nameList.get(nameList.indexOf(position)+1).split("\\.")[0];
+                        Log.e("checkIndex", nameList.get(position));
+                        String idStr = nameList.get(position).split("\\.")[0];
+                        Log.e("idStr", idStr);
+                        int idNum = Integer.parseInt(idStr);
+                        Log.e("idNum", "" + idNum);
+                        //nameList.remove(idNum);
+                        DBManager.removeData(getActivity(), idNum);
+                        nameList.remove("" + idNum);
+                        nameList.clear();
+                        DBManager.selectAll(getActivity(), nameList, afterRemove);
+                        Log.e("checkDay:", "1."+afterRemove);
+                        baseAdapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });
@@ -130,8 +143,10 @@ public class CalendarActivity extends Fragment {
                     Toast.LENGTH_SHORT).show();
             nameList.clear();
             DBManager.selectAll(getActivity(), nameList, formatter.format(date));
-            afterRemove = new Date();
-            afterRemove = date;
+            afterRemove = formatter.format(date);
+            Log.d("afterRemove", afterRemove);
+            //afterRemove = new Date();
+            //afterRemove = date;
 //            if(baseAdapter.getCount() > 2){
 //                View item = baseAdapter.getView(0, null, mlist);
 //                item.measure(0, 0);
